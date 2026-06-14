@@ -6,6 +6,7 @@ def create_app():
 
     app = Flask(__name__)
 
+    app.config['SECRET_KEY'] = 'dev_secret_key_123'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///madproject.db' # Connecting flask with Database
     db.init_app(app) # Connecting Database (SQLAlchemy) with Flask
 
@@ -30,5 +31,8 @@ def create_app():
         
         else:
             print("Admin already exist")
-        
+
+    from app.routes import authentication_bp # We import it here to prevent the Circular Import Trap.
+    app.register_blueprint(authentication_bp)
+
     return app

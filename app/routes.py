@@ -4,6 +4,11 @@ from app.models import User
 
 authentication_bp = Blueprint('auth', __name__)
 
+@authentication_bp.route('/')
+def home():
+    return redirect(url_for('auth.login'))
+
+
 @authentication_bp.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -18,9 +23,8 @@ def login():
     # Now checking if user actually exist in User table or not 
 
     user = User.query.filter_by(username=username).first()
-    pass_check = check_password_hash(user.password_hash, password)
 
-    if user and pass_check:
+    if user and check_password_hash(user.password_hash, password):
 
         # User exist in table thus we establish connection 
 

@@ -1,7 +1,8 @@
+MILESTONE - 1 WORK
+
 We use db.relationship() in Parent Table and then connect all other tables with Parent table
 
-
-<h1>Why to use db.relationsip() when ForeignKey exist to connect Tables ?<h1>
+Why to use db.relationsip() when ForeignKey exist to connect Tables ?
 
 -> A ForeignKey belongs strictly to database. This enforce the database to have user_id = 5 in it. But what if we try booking.user_id we get 5. 
 
@@ -9,7 +10,7 @@ But the thing is booking.user_id = 5 and user_id = 5 are not same thing for Pyth
 
 
 
-<h1>Creating Pre-existing Admin using Python<h1>  
+Creating Pre-existing Admin using Python 
 
 We do this in out main file app.py when web server starts then backend (Flask) will go to Python and there we will create Admin, If id does not exist already.
 
@@ -19,8 +20,24 @@ In main file 'app.py' we will provide parameter to it which is 'app' so that our
 
 
 2) Now moving with Admin user creation -> When we run app.py first thing we need to do actaully is to tell our application where our database is going to be and what its name will be. 
-
+nt User (Trekker) registration and login.
 Because we are still not running web, Flask doesnt know which app we are trying to use so we need to create a proxy one using app_context() which requires a app.config['...'] = 'database' app.config tells to use that app and app_context() will use it. 
+
+
+MILESTONE - 2 WORK 
+
+1) Created RBAC (Role based Access) functionaltiy. Used Flask Blueprint for it. 
+
+What is Flask Blueprint ?
+
+-> WE can think of it like a mold, in which we code an entirely differnt thing and then use that blueprint inside our app to make it work. Blueprint on itself is not useful it has to be paired with app to actually make use of it.
+
+Why to define app.config['SECRET_KEY'] = 'dev_secret_key_123' ? 
+
+-> Browser is Client side, We as a developer cant do much with it. So when Server receives a request from Browser it will work on that request. But what if user went into Developer tools and changed role from 'Trekker' to 'Admin'. Server wont know anything and it will execute it, which will be catastrophioc.
+
+-> To solve this issue everytime a request is sent by user, server checks that secret key and it helps server to realize whether it can execute that request or not. 
+
 
 
 
