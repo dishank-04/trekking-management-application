@@ -32,7 +32,10 @@ def create_app():
         else:
             print("Admin already exist")
 
-    from app.routes import authentication_bp # We import it here to prevent the Circular Import Trap.
+    from app.routes.authentication import authentication_bp # We import it here to prevent the Circular Import Trap.
+    from app.routes.admin import admin_bp
+
     app.register_blueprint(authentication_bp)
+    app.register_blueprint(admin_bp)
 
     return app

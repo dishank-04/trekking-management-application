@@ -13,7 +13,7 @@ def home():
 def login():
 
     if request.method == 'GET': # If user is just sitting on Login Page or clicked to view Login page
-        return render_template('login_test.html')
+        return render_template('authentication/login_test.html')
 
     # If user has clicked on 'Submit/Login' then its a post request. Thus we will get user's username and password from that POST request 
 
@@ -32,7 +32,7 @@ def login():
         session['role'] = user.role
 
         if user.role == 'Admin':
-            return redirect(url_for('admin_routes.dashboard'))
+            return redirect(url_for('admin.admin_dashboard'))
         
         elif user.role == 'Staff':
             return redirect(url_for('staff_routes.dashboard'))

@@ -39,9 +39,13 @@ Why to define app.config['SECRET_KEY'] = 'dev_secret_key_123' ?
 -> To solve this issue everytime a request is sent by user, server checks that secret key and it helps server to realize whether it can execute that request or not. 
 
 
+MILESTONE - 3 Work 
 
+We start with Admin dashboard and functionaltiy now. 
 
+First thing we need is to actually authenticate that whether the user who is trying to access any url with '/admin' Prefix has role == 'admin' or not. This is important because and user with role staff or trekker should not be able to access anything related to /admin. 
 
+To solve this issue we use something called .before_request() with admin blueprint, what it does is it will check whether role = 'admin' is the user who is trying to access any url with /admin. So it will be like barrier check before user gets access to /admin routes
 
-
+-> Using SQLAlchemy to perform sql for us on Database and then we use Jinja template in dashboard.html to put values of the queries.
 

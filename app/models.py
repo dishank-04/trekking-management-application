@@ -21,7 +21,6 @@ class User(db.Model):
     # Defining Relationships between Tables for Python to understand them
 
     staff_profile = db.relationship('StaffProfile', backref='user', uselist=False) # userlist =False strictly enforces a 1-to-1 relatiosnhip b/w users and staff_profiles table
- 
     bookings = db.relationship('Booking', backref='trekker', lazy=True) # lazy=True Parameter is used tell SQLAlchemy that until i specifically state a python code like user.bookings do not run SQL Query 
 
 
