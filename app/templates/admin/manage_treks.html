@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Admin Treks</title>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4d-flex justify-content-between align-items-center mb-4">
+            <h2>All Scheduled Treks</h2>
+            <a href="{{ url_for('admin.create_trek') }}" class="btn btn-primary">+ Create New Trek</a>
+        </div>
+
+        <table class="table table-striped table-hover shadow-sm bg-white rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Trek Name</th>
+                    <th>Assigned Staff</th>
+                    <th>Location</th>
+                    <th>Schedule (Start-End)</th>
+                    <th>Duration (Days)</th>
+                    <th>Difficulty</th>
+                    <th>Slots Left</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for trek in all_treks %}
+
+                <tr>
+                    <td>{{ trek.id }}</td>
+                    <td>{{ trek.trek_name }}</td>
+                    <td>{{ trek.assigned_staff.name }}</td>
+                    <td>{{ trek.location }}</td>
+                    <td>
+                        <small class="text-muted">
+                            {{ trek.start_date.strftime('%Y-%m-%d') }} to {{ trek.end_date.strftime('%Y-%m-%d') }} 
+                        </small>
+                    </td>
+                    <td>{{ trek.duration }}</td>
+                    <td>{{ trek.difficulty }}</td>
+                    <td>{{ trek.available_slots }}</td>
+                    <td>{{ trek.status }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_trek', trek_id=trek.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="#" class="btn btn-sm btn-danger">Remove</a>
+                    </td>
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="10" class="text-center text-muted py-4">
+                        No treks found in the system. Click "+ Create New Trek" to get started.
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
