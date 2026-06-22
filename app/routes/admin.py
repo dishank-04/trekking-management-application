@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, session, redirect, url_for, flash
 from app import models
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -219,6 +219,8 @@ def add_staff():
 @admin_bp.route('/staff/toggle/<int:staff_id>', methods=['POST'])
 def toggle_staff_status(staff_id):
 
+    # We are not going to delete Staff from db rather we will just deactivate that staff member, because we need staff's id to actualyl get history and booking part. 
+
     staff_user = models.User.query.get_or_404(staff_id)
 
     # Before deactivating staff we will check if they have been already assigned to some upcoming/active trek
@@ -238,4 +240,40 @@ def toggle_staff_status(staff_id):
 
     models.db.session.commit()
     return redirect(url_for('admin.manage_staff'))
+
+
+
+@admin_bp.route('/staff/pending_allotments')
+def staff_pending():
+
+    # This is a strictly GET method we are not doing reassigment here all we are doing is just display the allotments which needs to be reassigned.
+    
+    pending_treks = models.Trek.query.join(models.User).filter(models.User.is_blacklisted == True,
+                                                                    models.Trek.status.in_(['Upcoming', 'Active'])).all()
+    
+    available_staff = models.User.query.filter_by(role='Staff', is_blacklisted=False).all()
+    
+    return render_template('admin/staff/pending_staff_allotments.html', pending_treks=pending_treks, active_staff=available_staff)
+
+
+
+@admin_bp.route('/staff/reassign_staff/<int:trek_id>', methods=['POST'])
+def reassign_staff(trek_id):
+
+    raw_staff_id = request.form.get('new_staff_id')
+    new_staff_id = int(raw_staff_id)
+
+    # We need to check if the new_staff_id which we got is still valid or not because what if admin changes new_staff and its blacklisted while he simultaneously try to put that new_staff ro reassignment
+
+    valid_staff = models.User.query.filter_by(id=new_staff_id, role='Staff', is_blacklisted=False).first()
+
+    # Now we can update our Trek
+
+    trek_to_update = models.Trek.query.get_or_404(trek_id)
+    trek_to_update.assigned_staff_id = valid_staff.id
+
+    models.db.session.commit()
+
+    flash(f"Successfully Reassigned {trek_to_update.trek_name} to {valid_staff.name}", "success")
+    return redirect(url_for('admin.staff_pending'))
 
