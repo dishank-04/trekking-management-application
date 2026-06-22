@@ -49,3 +49,11 @@ To solve this issue we use something called .before_request() with admin bluepri
 
 -> Using SQLAlchemy to perform sql for us on Database and then we use Jinja template in dashboard.html to put values of the queries.
 
+
+-> When using delete_trek() we need to keep in mind that trek_id which we delete will also exist in bookings table, we need to do cascading because treks is Parent Table and bookings is child table. Thus if we delete a trek me must delete all rows in bookings table with that trek_id or else there will be problems. 
+
+
+Staff Related :-
+
+-> We will not delete staff rather we will be just labelling them to Inactive when we make is_blacklisted = True for them. Once blacklisted staff shouldn't be visible in Create Trek form. 
+But before making a staff memeber inactive we need to check that there are no active treks for them.

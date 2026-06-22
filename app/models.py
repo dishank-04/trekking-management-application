@@ -53,7 +53,7 @@ class Trek(db.Model):
 
     # Relationships among Tables 
     
-    bookings = db.relationship('Booking', backref='trek', lazy=True)
+    bookings = db.relationship('Booking', backref='trek', lazy=True, cascade='all, delete-orphan')
     assigned_staff = db.relationship('User', foreign_keys=[assigned_staff_id])
 
 

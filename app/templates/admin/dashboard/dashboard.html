@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %} Overview {% endblock %}
+
+{% block content %}
+
+    <h2 class="mb-4">Admin Dashboard</h2>
+    <div class="row">
+
+        <div class="col-md-3 mb-3">
+            <a href="{{ url_for('admin.manage_treks') }}" class="text-decoration-none">
+                <div class="card text-white bg-primary h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Treks</h5>
+                        <h2 class="display-4">{{ treks_count }}</h2>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Trekkers</h5>
+                    <h2 class="display-4">{{ users_count }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="{{ url_for('admin.manage_staff') }}" class="text-decoration-none">
+                <div class="card text-white bg-warning h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Staff</h5>
+                        <h2 class="display-4">{{ staff_count }}</h2>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Bookings</h5>
+                    <h2 class="display-4">{{ bookings_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3 mb-3">
+            <a href="#" class="text-decoration-none">
+                <div class="card text-white bg-primary h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Allotments</h5>
+                        <h2 class="display-4">{{ pending_count }}</h2>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>    
+
+
+{% endblock %}
