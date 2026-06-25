@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %} Manage Trekkers {% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>All Registered Trekkers</h2>
+        
+        <form action="{{ url_for('admin.manage_trekkers') }}" method="GET" class="d-flex w-25">
+            <input type="text" name="search" class="form-control me-2" placeholder="Search Name or ID..." value="{{ request.args.get('search', '') }}">
+            <button type="submit" class="btn btn-dark">Search</button>
+            {% if request.args.get('search') %}
+                <a href="{{ url_for('admin.manage_trekkers') }}" class="btn btn-outline-secondary ms-2">Clear</a>
+            {% endif %}
+        </form>
+        
+    </div>
+
+    <table class="table table-striped table-hover shadow-sm bg-white rounded">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Total Bookings</th>
+                <th>Account Status</th>
+                <th>Actions</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for trekker in all_trekkers %}
+
+            <tr>
+
+                <td>{{ trekker.id }}</td>
+                <td>{{ trekker.name }}</td>
+                <td>{{ trekker.username }}</td>
+
+                <td>{{ trekker.bookings | length }}</td>
+                
+                <td>
+
+                    {% if trekker.is_blacklisted %}
+                        <span class="badge bg-danger">Blacklisted</span>
+                    {% else %}
+                        <span class="badge bg-success">Active</span>
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <form action="{{ url_for('admin.toggle_trekker_status', trekker_id=trekker.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-warning">
+                            {% if trekker.is_blacklisted %} 
+                                Unblacklist
+                            {% else %}
+                                Blacklist
+                            {% endif %}
+                        </button>
+                    </form>
+
+                    <a href="{{ url_for('admin.view_trekker_history', trekker_id=trekker.id) }}" class="btn btn-sm btn-info">View History</a>
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                    Currently no Trekkers exist.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+{% endblock %}
+

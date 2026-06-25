@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %} Manage Bookings {% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Global Bookings Ledger</h2>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover shadow-sm bg-white rounded">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>Booking ID</th>
+                <th>Date/Time</th>
+                <th>Trekker Name</th>
+                <th>Trek Name</th>
+                <th>Trek Status</th>
+                <th>Booking Status</th>
+                <th>Payment Status</th>
+                <th>Actions</th>
+            </tr>
+            
+        </thead>
+
+        <tbody>
+
+            {% for booking in all_bookings %}
+
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.booking_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ booking.trekker.username }}</td>
+                <td>{{ booking.trek.trek_name }}</td>
+                <td>{{ booking.trek.status }}</td>
+
+                <td>
+                    <span class="badge {% if booking.booking_status == 'Confirmed' %}bg-success{% elif booking.booking_status == 'Cancelled' %}bg-danger{% else %}bg-warning{% endif %}">
+                        {{ booking.booking_status }}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="badge {% if booking.payment_status == 'Paid' %}bg-success{% elif booking.payment_status == 'Forfeited' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                        {{ booking.payment_status }}
+                    </span>
+                </td>
+
+                <td>
+                    {% if booking.booking_status == 'Confirmed' and booking.trek.status == 'Upcoming' %}
+
+                        <form action="{{ url_for('admin.force_cancel_booking', booking_id=booking.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Force Cancel</button>
+                        </form>
+
+                    {% else %}
+
+                        <span class="text-muted small">Locked</span>
+
+                    {% endif %}
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="8" class="text-centre">No Bookings found in the system</td>
+            </tr>
+            
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %} Trekker History {% endblock %}
+
+{% block content %}
+
+    <div class="mb-4">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>History for {{ trekker.name }} (@{{ trekker.username }})</h2>
+            <a href="{{ url_for('admin.manage_trekkers') }}" class="btn btn-secondary">Back to Trekkers</a>
+        </div>
+
+        <p>
+            <strong>Status:</strong> 
+            {% if trekker.is_blacklisted %}
+                <span class="badge bg-danger">Blacklisted</span>
+            {% else %}
+                <span class="badge bg-success">Active</span>
+            {% endif %}
+            | <strong>Total Bookings:</strong> {{ history|length }}
+        </p>
+
+    </div>
+
+    <div class="table-responsive">
+    <table class="table table-striped table-hover shadow-sm bg-white rounded">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Booking Date</th>
+                <th>Trek Name</th>
+                <th>Trek Dates</th>
+                <th>Trek Status</th>
+                <th>Booking Status</th>
+                <th>Payment Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for booking in history %}
+
+            <tr>
+                <td>{{ booking.booking_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ booking.trek.trek_name }}</td>
+                <td>{{ booking.trek.start_date.strftime('%Y-%m-%d') }} to {{ booking.trek.end_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ booking.trek.status }}</td>
+
+                <td>
+                    <span class="badge {% if booking.booking_status == 'Confirmed' %}bg-success{% elif booking.booking_status == 'Cancelled' %}bg-danger{% else %}bg-warning{% endif %}">
+                        {{ booking.booking_status }}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="badge {% if booking.payment_status == 'Forfeited' %}bg-danger{% elif booking.payment_status == 'Pending' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                        {{ booking.payment_status }}
+                    </span>
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="6" class="text-center">No booking history found.</td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

@@ -19,12 +19,14 @@
         </div>
 
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-success h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Total Trekkers</h5>
-                    <h2 class="display-4">{{ users_count }}</h2>
+            <a href="{{ url_for('admin.manage_trekkers') }}" class="text-decoration-none">
+                <div class="card text-white bg-success h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Trekkers</h5>
+                        <h2 class="display-4">{{ users_count }}</h2>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-md-3 mb-3">
@@ -39,13 +41,16 @@
         </div>
 
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-danger h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Total Bookings</h5>
-                    <h2 class="display-4">{{ bookings_count }}</h2>
+           <a href="{{ url_for('admin.manage_bookings') }}" class="text-decoration-none"> 
+                <div class="card text-white bg-danger h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Bookings</h5>
+                        <h2 class="display-4">{{ bookings_count }}</h2>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
+
     </div>
 
     <div class="row">

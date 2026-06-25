@@ -37,11 +37,21 @@ def admin_dashboard():
 
 @admin_bp.route('/trek')
 def manage_treks():
-    
+
+    search_term = request.args.get('search')
+    query = models.Trek.query
+
+    if search_term:
+
+        if search_term.isdigit():
+            query = query.filter(models.Trek.id == int(search_term))
+        
+        else:
+            query = query.filter(models.Trek.trek_name.ilike(f"%{search_term}%"))
+
     # Displaying all the treks
 
-    treks_list = models.Trek.query.all() # .query.all() will return results in a list format so we need to actually run a for loop to display all treks in a table. 
-
+    treks_list = query.all() # .query.all() will return results in a list format so we need to actually run a for loop to display all treks in a table. 
     return render_template('admin/trek/manage_treks.html', all_treks=treks_list) # Passing this list of treks to Jinja template in HTML
 
 
@@ -160,14 +170,24 @@ def delete_trek(trek_id):
 
 
 
-''' All routes given below are related to staff'''
+''' All routes given below are related to staff which include manage_staff, adding_staff, Deactivate Staff, pending allotments of deactivated staff and reassigning those treks to new staff'''
 
 @admin_bp.route('/staff')
 def manage_staff():
-    
-    # Displaying profile of all staffs
 
-    staff_list = models.User.query.filter_by(role='Staff').all()
+    search_term = request.args.get('search')
+    query = models.User.query.filter_by(role='Staff')
+
+    if search_term:
+
+        if search_term.isdigit():
+            query = query.filter(models.User.id == int(search_term))
+        
+        else:
+            query = query.filter(models.User.name.ilike(f"%{search_term}%"))
+
+
+    staff_list = query.all()
     return render_template('admin/staff/manage_staff.html', all_staff=staff_list)
 
 
@@ -277,3 +297,104 @@ def reassign_staff(trek_id):
     flash(f"Successfully Reassigned {trek_to_update.trek_name} to {valid_staff.name}", "success")
     return redirect(url_for('admin.staff_pending'))
 
+
+
+''' All below routes are realted to Trekkers/users '''
+
+@admin_bp.route('/trekkers')
+def manage_trekkers():
+
+    search_term = request.args.get('search')
+    query = models.User.query.filter_by(role='Trekker')
+
+    if search_term:
+        
+        # If admin searches using id then
+        if search_term.isdigit():
+            query = query.filter(models.User.id == int(search_term))
+        
+        # Admin is searching using alphabets
+        else:
+            query = query.filter(models.User.name.ilike(f"%{search_term}%"))
+    
+    
+    trekkers_list = query.all() # If there is no search term we give all the Trekkers to admin
+
+    return render_template('/admin/trekkers/manage_trekkers.html', all_trekkers=trekkers_list)
+
+
+
+@admin_bp.route('/trekkers/toggle/<int:trekker_id>', methods=['POST'])
+def toggle_trekker_status(trekker_id):
+    
+    trekker_user = models.User.query.get_or_404(trekker_id)
+    trekker_user.is_blacklisted = not trekker_user.is_blacklisted
+
+    if trekker_user.is_blacklisted:
+
+        upcoming_bookings = models.Booking.query.join(models.Trek).filter(models.Trek.status == 'Upcoming', 
+                                                                          models.Booking.booking_status == 'Confirmed',
+                                                                          models.Booking.user_id == trekker_id).all()
+        
+
+        for booking in upcoming_bookings:
+
+            booking.booking_status = 'Cancelled'
+            booking.payment_status = 'Forfeited'
+            booking.trek.available_slots += 1
+        
+
+        if upcoming_bookings:
+            flash(f"Trekker {trekker_user.name} has been Blacklisted {len(upcoming_bookings)} bookings have been cancelled", "danger")
+
+        else:
+            flash(f"Trekker {trekker_user.name} has been Blacklisted", "danger")
+    
+    
+    models.db.session.commit()
+
+    return redirect(url_for('admin.manage_trekkers'))
+
+
+@admin_bp.route('/trekkers/<int:trekker_id>/history')
+def view_trekker_history(trekker_id):
+
+    trekker_user = models.User.query.get_or_404(trekker_id)
+
+    booking_history = (models.Booking.query.filter_by(user_id=trekker_id)
+                       .join(models.Trek)
+                       .order_by(models.Trek.start_date.desc())
+                       .all()
+                      ) 
+    
+    return render_template('/admin/trekkers/view_trekker_history.html', trekker=trekker_user, history=booking_history)
+
+
+
+''' All routes given below are related to bookings '''
+
+@admin_bp.route('/bookings')
+def manage_bookings():
+
+    all_bookings = models.Booking.query.join(models.User, models.Booking.user_id == models.User.id).join(models.Trek, models.Booking.trek_id == models.Trek.id).order_by(models.Booking.booking_date.desc()).all()
+
+    return render_template('/admin/bookings/manage_bookings.html', all_bookings=all_bookings)
+
+
+@admin_bp.route('/bookings/forcecancel/<int:booking_id>', methods=['POST'])
+def force_cancel_booking(booking_id):
+
+    booking_to_cancel = models.Booking.query.get_or_404(booking_id)
+
+    if booking_to_cancel.booking_status != 'Confirmed' or booking_to_cancel.trek.status != 'Upcoming':
+        flash("Only Confirmed Bookings for Upcoming treks can be cancelled")
+        return redirect(url_for('admin.manage_bookings'))
+
+    booking_to_cancel.booking_status = 'Cancelled'
+    booking_to_cancel.trek.available_slots += 1
+    booking_to_cancel.payment_status = 'Forfeited'
+
+    models.db.session.commit()
+
+    flash(f"Booking {booking_to_cancel.id} for user {booking_to_cancel.trekker.name} has been force cancelled", "warning")
+    return redirect(url_for('admin.manage_bookings'))

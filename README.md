@@ -57,3 +57,13 @@ Staff Related :-
 
 -> We will not delete staff rather we will be just labelling them to Inactive when we make is_blacklisted = True for them. Once blacklisted staff shouldn't be visible in Create Trek form. 
 But before making a staff memeber inactive we need to check that there are no active treks for them.
+
+
+User Related :-
+
+1) In manage_trekkers we are going to show these things to admin -> ID, Name, username, total_bookings, a/c status (Active or Blacklisted), Actions. Important thing is that User will register themselves, admin cannot add user. 
+
+2) When we blacklist a trekker, we need to remove that trekker from all the 'Upcoming' treks not from Active and Completed ones but only for upcoming treks. And once we blacklist a trekker his booking is cancelled which cannot be redone even if he is unblacklisted. If Admin blacklists the user we show payment_status = 'Forfeited' but if User himself will cancel then we will show refund, but that part is for user routes.
+
+
+ISSUE TO SOLVE -> WHEN USER BOOKS A TREK THE SLOTS_AVAILABLE DOESNT DECREASE IN TREKS CARD SOLVE IT. WE WILL SOLVE THIS ISSUE WHEN WE WILL MAKE ROUTES FOR TREKKER/USER NOT IN ADMIN PANEL.
