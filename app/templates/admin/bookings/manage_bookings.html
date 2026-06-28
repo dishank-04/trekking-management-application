@@ -44,7 +44,7 @@
                 </td>
 
                 <td>
-                    <span class="badge {% if booking.payment_status == 'Paid' %}bg-success{% elif booking.payment_status == 'Forfeited' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                    <span class="badge {% if booking.payment_status == 'Completed' %}bg-success{% elif booking.payment_status == 'Forfeited' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
                         {{ booking.payment_status }}
                     </span>
                 </td>

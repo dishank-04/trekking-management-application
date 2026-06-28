@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %} Trek History {% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Completed Treks</h2>
+        <a href="{{ url_for('staff.staff_dashboard') }}" class="btn btn-outline-secondary fw-bold">Back to Dashboard</a>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Trek Name</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Available Slots</th>
+                            <th>Bookings</th>
+                            <th>View</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for trek in treks %}
+
+                        <tr>
+                            <td class="align-middle">{{ trek.id }}</td>
+                            <td class="align-middle fw-bold">{{ trek.trek_name }}</td>
+                            <td class="align-middle">{{ trek.start_date.strftime('%Y-%m-%d') }}</td>
+                            <td class="align-middle">{{ trek.end_date.strftime('%Y-%m-%d') }}</td>
+                            <td class="align-middle">{{ trek.duration }} Days</td>
+                            <td class="align-middle">{{ trek.status }}</td>
+                            <td class="align-middle">{{ trek.available_slots }}</td>
+                            <td class="align-middle">{{ trek.bookings | length }}</td>
+
+                            <td class="align-middle">
+                                <a href="{{ url_for('staff.trek_participants_history', trek_id=trek.id) }}" class="btn btn-sm btn-info">View Participants List</a>
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-5 text-muted">
+                                No Completed Treks
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
