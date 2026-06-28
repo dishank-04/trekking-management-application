@@ -50,8 +50,12 @@
                 <td>
                     {% if staff.is_blacklisted %}
                         <span class="badge bg-danger">Blacklisted</span>
-                    {% else %}
+                    {% elif staff.staff_profile and staff.staff_profile.status == 'Pending_Active' %}
+                        <span class="badge bg-warning text-dark">Pending Setup</span>
+                    {% elif staff.staff_profile and staff.staff_profile.status == 'Active' %}
                         <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Unknown</span>
                     {% endif %}
                 </td>
 

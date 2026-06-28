@@ -188,7 +188,7 @@ def manage_staff():
 
 
     staff_list = query.all()
-    return render_template('admin/staff/manage_staff.html', all_staff=staff_list)
+    return render_template('admin/staff_admin/manage_staff.html', all_staff=staff_list)
 
 
 @admin_bp.route('/staff/addstaff', methods=['GET', 'POST'])
@@ -225,7 +225,7 @@ def add_staff():
         
         new_staff_profile = models.StaffProfile(user=new_staff_user,
                                                 contact_number=contact_number,
-                                                status='Active')
+                                                status='Pending_Active')
         
         models.db.session.add(new_staff_user)
         models.db.session.commit()
@@ -233,7 +233,7 @@ def add_staff():
         flash(f"Staff member {name} added successfully!", "success")
         return redirect(url_for('admin.manage_staff'))
         
-    return render_template('admin/staff/add_staff.html') # When it is a GET request we need to display HTML Form
+    return render_template('admin/staff_admin/add_staff.html') # When it is a GET request we need to display HTML Form
 
 
 @admin_bp.route('/staff/toggle/<int:staff_id>', methods=['POST'])
@@ -256,7 +256,7 @@ def toggle_staff_status(staff_id):
     staff_user.is_blacklisted = not staff_user.is_blacklisted
 
     if staff_user.staff_profile:
-        staff_user.staff_profile.status = "Inactive" if staff_user.is_blacklisted else "Active"
+        staff_user.staff_profile.status = "Blacklisted" if staff_user.is_blacklisted else "Active"
 
     models.db.session.commit()
     return redirect(url_for('admin.manage_staff'))
@@ -273,7 +273,7 @@ def staff_pending():
     
     available_staff = models.User.query.filter_by(role='Staff', is_blacklisted=False).all()
     
-    return render_template('admin/staff/pending_staff_allotments.html', pending_treks=pending_treks, active_staff=available_staff)
+    return render_template('admin/staff_admin/pending_staff_allotments.html', pending_treks=pending_treks, active_staff=available_staff)
 
 
 

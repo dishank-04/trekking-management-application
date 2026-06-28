@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %} Update Profile {% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+        
+        <div class="card shadow border-0">
+            <div class="card-header bg-dark text-white text-center py-3">
+                <h4 class="mb-0">Account Setup</h4>
+            </div>
+            
+            <div class="card-body p-4">
+                <div class="alert alert-warning text-center small mb-4">
+                    <strong>Security Protocol:</strong> You are using a temporary admin-assigned password. Setup a password for yourself.
+                </div>
+
+                <form action="{{ url_for('staff.update_profile') }}" method="POST">
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold mb-1">Username (Locked)</label>
+                        <input type="text" class="form-control bg-light text-muted" value="{{ user.username }}" disabled>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold mb-1">Name (Locked)</label>
+                        <input type="text" class="form-control bg-light text-muted" value="{{ user.name }}" disabled>
+                    </div>
+
+                    <hr class="mb-4">
+
+                    <div class="mb-3">
+                        <label for="contact_number" class="form-label fw-bold">Contact Number</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="contact_number" 
+                               name="contact_number" 
+                               value="{{ user.staff_profile.contact_number }}" 
+                               required 
+                               pattern="\d{10}" 
+                               title="Contact number must be exactly 10 digits.">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-bold">New Secure Password</label>
+                        <input type="password" 
+                               class="form-control" 
+                               id="password" 
+                               name="password" 
+                               required 
+                               minlength="6"
+                               placeholder="Enter at least 6 characters">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Secure Profile & Enter Dashboard</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

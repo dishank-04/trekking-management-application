@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %} Manage Trek {% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Manage Trek: {{ trek.trek_name }}</h2>
+        <a href="{{ url_for('staff.assigned_treks') }}" class="btn btn-outline-secondary fw-bold">Back to List</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Details of trek</h5>
+                </div>
+
+                <div class="card-body bg-light">
+
+                    <ul class="list-group list-group-flush">
+
+                        <li class="list-group-item bg-light d-flex justify-content-between">
+                            <strong>Location:</strong> <span>{{ trek.location }}</span>
+                        </li>
+
+                        <li class="list-group-item bg-light d-flex justify-content-between">
+                            <strong>Difficulty:</strong> <span>{{ trek.difficulty }}</span>
+                        </li>
+
+                        <li class="list-group-item bg-light d-flex justify-content-between">
+                            <strong>Start Date:</strong> <span>{{ trek.start_date.strftime('%Y-%m-%d') }}</span>
+                        </li>
+
+                        <li class="list-group-item bg-light d-flex justify-content-between">
+                            <strong>End Date:</strong> <span>{{ trek.end_date.strftime('%Y-%m-%d') }}</span>
+                        </li>
+
+                        <li class="list-group-item bg-light d-flex justify-content-between">
+                            <strong>Total Bookings:</strong> 
+                            <span class="badge bg-secondary rounded-pill fs-6">{{ trek.bookings | length }}</span>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Update Parameters</h5>
+                </div>
+
+                <div class="card-body">
+                    
+                    <form action="{{ url_for('staff.manage_treks', trek_id=trek.id) }}" method="POST">
+                        
+                        <div class="mb-4">
+                            <label for="available_slots" class="form-label fw-bold">Available Slots</label>
+                            <input type="number" 
+                                   class="form-control form-control-lg" 
+                                   id="available_slots" 
+                                   name="available_slots" 
+                                   value="{{ trek.available_slots }}" 
+                                   min="0" 
+                                   required>
+                            <div class="form-text">Update the slots for Trek</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="status" class="form-label fw-bold">Trek Status</label>
+                            <select class="form-select form-select-lg" id="status" name="status">
+                                <option value="Active" {% if trek.status == 'Active' %}selected{% endif %}>Active</option>
+                                <option value="Completed" {% if trek.status  == 'Completed' %}selected{% endif %}>Completed</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100 few-bold py-2">Apply Updates</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

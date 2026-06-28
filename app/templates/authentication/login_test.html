@@ -1,7 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head><title>Test Auth</title></head>
-<body>
+{% extends "base.html" %}
+
+{% block title %} Authentication {% endblock %}
+
+{% block content %}
+
     <h2>Test Login Engine</h2>
     <form method="POST" action="/login">
         <label>Username:</label>
@@ -12,5 +14,5 @@
         
         <button type="submit">Submit</button>
     </form>
-</body>
-</html>
+
+{% endblock %}

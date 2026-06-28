@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %} Staff Dashboard {% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1">Staff Dashboard</h2>
+            <p class="text-muted">Welcome, {{ staff_name }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        
+        <div class="col-md-4 mb-3">
+            <a href="{{ url_for('staff.assigned_treks') }}" class="text-decoration-none">
+                <div class="card text-white bg-primary h-100 shadow border-0">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Assigned Treks</h5>
+                        <h2 class="display-4 fw-semibold">{{ active_count }}</h2>
+                        <p class="card-text small text-white-50">Upcoming and Active Treks</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <a href="#" class="text-decoration-none">
+                <div class="card text-white bg-success h-100 shadow border-0">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Trek History</h5>
+                        <h2 class="display-4 fw-semibold">{{ completed_count }}</h2>
+                        <p class="card-text small text-white-50">Successfully completed Treks</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

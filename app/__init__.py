@@ -34,8 +34,10 @@ def create_app():
 
     from app.routes.authentication import authentication_bp # We import it here to prevent the Circular Import Trap.
     from app.routes.admin import admin_bp
+    from app.routes.staff import staff_bp
 
     app.register_blueprint(authentication_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(staff_bp)
 
     return app

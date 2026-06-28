@@ -34,8 +34,25 @@ def login():
         if user.role == 'Admin':
             return redirect(url_for('admin.admin_dashboard'))
         
+
         elif user.role == 'Staff':
-            return redirect(url_for('staff_routes.dashboard'))
+
+            if user.is_blacklisted:
+
+                session.clear()
+
+                flash("Your Account has been deactivated by Admin", "danger")
+                return redirect(url_for('auth.login'))
+            
+            if user.staff_profile.status == "Pending_Active":
+
+                flash("Update your passward to continue", "warning")
+                return redirect(url_for('staff.update_profile'))
+            
+            elif user.staff_profile.status == "Active":
+
+                return redirect(url_for('staff.staff_dashboard'))
+            
         
         elif user.role == 'Trekker':
             return redirect(url_for('trekker_routes.dashboard'))

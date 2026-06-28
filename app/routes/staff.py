@@ -1,0 +1,127 @@
+from flask import Blueprint, request, render_template, session, redirect, url_for, flash
+from app import models
+from werkzeug.security import generate_password_hash
+
+
+staff_bp = Blueprint('staff', __name__, url_prefix='/staff')
+
+@staff_bp.before_request
+def staff_hold():
+
+    if 'user_id' not in session or session.get('role') != 'Staff':
+
+        flash("Unauthorized Access, relogin", "danger")
+        return redirect(url_for('auth.login'))
+
+    current_staff_user = models.User.query.get(session['user_id']) # Searches using Primary ID helps with performance boost
+
+
+    if current_staff_user.staff_profile.status == "Pending_Active":
+
+        allowed_endpoints = ['staff.update_profile', 'auth.logout']
+
+        if request.endpoint not in allowed_endpoints:
+            flash("You must finalize your profile first", "warning")
+            return redirect(url_for('staff.update_profile'))
+
+
+
+@staff_bp.route('/update_profile', methods=['GET', 'POST'])
+def update_profile():
+
+    current_staff_user = models.User.query.get(session['user_id'])
+
+    if request.method == 'POST':
+
+        new_password = request.form.get('password')
+        contact_number = request.form.get('contact_number')
+
+        if not new_password or len(new_password) < 6: # need to keep 'not new password' so that if staff_user tris to submit empty passowrd it evaluates to True. 
+            flash("Password must be atleast 6 characters", "warning")
+            return redirect(url_for('staff.update_profile'))
+
+        if len(contact_number) != 10 or not contact_number.isdigit():
+
+            flash("Invalid Format of contact number", "danger")
+            return redirect(url_for('staff.update_profile'))
+    
+        
+        current_staff_user.password_hash = generate_password_hash(new_password)
+        current_staff_user.staff_profile.contact_number = contact_number
+
+
+        current_staff_user.staff_profile.status = "Active"
+
+        models.db.session.commit()
+
+        flash("Welcome to Staff Dashboard", "success")
+        return redirect(url_for('staff.staff_dashboard'))
+    
+    # For GET Request
+    return render_template('staff/update_profile.html', user=current_staff_user)
+
+
+
+@staff_bp.route('/dashboard')
+def staff_dashboard():
+
+    staff_id = session['user_id']
+    staff_user = models.User.query.get(staff_id)
+
+    active_treks_count = models.Trek.query.filter(models.Trek.assigned_staff_id == staff_id,
+                                                  models.Trek.status.in_(['Upcoming', 'Active'])).count()
+    
+    completed_treks_count = models.Trek.query.filter(models.Trek.assigned_staff_id == staff_id, 
+                                                     models.Trek.status == 'Completed').count()
+    
+    return render_template('/staff/dashboard.html', staff_name=staff_user.name, active_count=active_treks_count, completed_count=completed_treks_count)
+
+
+
+@staff_bp.route('/assigned_treks')
+def assigned_treks():
+
+    treks = models.Trek.query.filter(models.Trek.status.in_(['Upcoming','Active']),
+                                     models.Trek.assigned_staff_id == session['user_id']).order_by(models.Trek.start_date.asc()).all()
+    
+    return render_template('/staff/assigned_treks.html', assigned_treks=treks)
+    
+
+
+@staff_bp.route('/manage_trek/<int:trek_id>', methods=['GET','POST'])
+def manage_treks(trek_id):
+
+    trek = models.Trek.query.filter_by(assigned_staff_id=session['user_id'], id=trek_id).first_or_404()
+
+
+    if request.method == "POST":
+
+        slots = request.form.get('available_slots')
+        new_status = request.form.get('status')
+
+        if not slots or int(slots) < 0:
+
+            flash("Slots cannot be empty or negative", "danger")
+            return redirect(url_for('staff.manage_treks', trek_id=trek.id))
+        
+        new_slots = int(slots)
+
+        if new_status == 'Active' and trek.status != 'Active': # We search for other treks where staff might be active
+
+            exisiting_active_trek = models.Trek.query.filter_by(assigned_staff_id=session['user_id'], status='Active').first()
+
+            if exisiting_active_trek:
+                flash(f"You already have an active trek {exisiting_active_trek.trek_name} you cannot Activate this trek before completing it", "danger")
+                return redirect(url_for('staff.manage_treks', trek_id=trek.id))
+        
+
+        trek.available_slots = new_slots
+        trek.status = new_status
+
+        models.db.session.commit()
+
+        flash(f"Trek {trek.trek_name} updated successfully", "success")
+        return redirect(url_for('staff.assigned_treks'))
+
+
+    return render_template('/staff/manage_treks.html', trek=trek)
