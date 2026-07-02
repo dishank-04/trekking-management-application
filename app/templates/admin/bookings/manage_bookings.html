@@ -40,7 +40,7 @@
                 <td>{{ booking.trek.status }}</td>
 
                 <td>
-                    <span class="badge {% if booking.booking_status == 'Confirmed' %}bg-success{% elif booking.booking_status == 'Cancelled' %}bg-danger{% else %}bg-warning{% endif %}">
+                    <span class="badge {% if booking.booking_status == 'Confirmed' %}bg-success{% elif booking.booking_status == 'Cancelled' %}bg-danger{% elif booking.booking_status == 'Completed' %}bg-success{% endif %}">
                         {{ booking.booking_status }}
                     </span>
                 </td>

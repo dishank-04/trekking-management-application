@@ -116,7 +116,7 @@ def process_payment(trek_id):
         return redirect(url_for('trekker.trek_checkout', trek_id=trek.id))
     
 
-''' Below route is for user history '''
+''' Below routes are for user history '''
 
 @trekker_bp.route('/history')
 def booking_history():
@@ -124,8 +124,43 @@ def booking_history():
     user_bookings = models.Booking.query.filter_by(user_id=session['user_id']).order_by(models.Booking.booking_date.desc()).all()
 
     return render_template('/trekker/booking_history/booking_history.html', bookings=user_bookings)
+
+
+
+@trekker_bp.route('/cancel_booking/<int:booking_id>', methods=['POST'])
+def cancel_booking(booking_id):
+
+    booking = models.Booking.query.get_or_404(booking_id)
+
+    if booking.user_id != session['user_id']:
+        flash("Unauthorized Actio", "danger")
+        return redirect(url_for('trekker.booking_history'))
+    
+    if booking.booking_status != 'Confirmed':
+        flash("This booking cannot be cancelled", "warning")
+        return redirect(url_for('trekker.booking_history'))
+
+    if booking.trek.status != 'Upcoming':
+        flash("Cannot cancel an already completed Trek", "danger")
+        return redirect(url_for('trekker.booking_history'))
     
 
+    try:
+        booking.booking_status = 'Cancelled'
+        booking.payment_status = 'Refund'
+
+        booking.trek.available_slots += 1
+
+        models.db.session.commit()
+        flash(f"Your booking for {booking.trek.trek_name} has been cancelled. Refund has been initiated", "success")
+
+    except Exception as e:
+        models.db.session.rollback()
+        flash("An error occured. Please try again later.", "danger")
+        
+    return redirect(url_for('trekker.booking_history'))
+
+    
 
 ''' Below Route is for Updating User profile'''
 

@@ -49,6 +49,8 @@
                                     <span class="badge bg-warning text-dark">Pending</span>
                                 {% elif booking.payment_status == 'Forfeited' %}
                                     <span class="badge bg-danger text-white">Forfeited</span>
+                                {% elif booking.payment_status == 'Refund' %}
+                                    <span class="badge bg-warning text-dark">Refund</span>
                                 {% endif %}
                             </td>
 

@@ -17,6 +17,7 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
+
                     <thead class="table-dark">
                         <tr>
                             <th>Booking Date</th>
@@ -25,6 +26,7 @@
                             <th>Trek Dates</th>
                             <th>Payment</th>
                             <th>Status</th>
+                            <th>Actions</th> 
                         </tr>
                     </thead>
                     
@@ -33,7 +35,8 @@
                         {% for booking in bookings %}
 
                         <tr>
-                            <td class="align-middle">{{ booking.booking_date.strftime('%b %d, %Y') }}</td>
+                            
+                             <td class="align-middle">{{ booking.booking_date.strftime('%b %d, %Y') }}</td>
                             
                             <td class="align-middle fw-bold">{{ booking.trek.trek_name }}</td>
                             <td class="align-middle">{{ booking.trek.location }}</td>
@@ -53,7 +56,7 @@
                                     <span class="badge bg-warning text-dark">Pending</span>
                                 {% endif %}
                             </td>
-                            
+
                             <td class="align-middle">
                                 {% if booking.booking_status == 'Confirmed' %}
                                     <span class="badge bg-primary">Confirmed</span>
@@ -65,17 +68,32 @@
                                     <span class="badge bg-secondary">{{ booking.booking_status }}</span>
                                 {% endif %}
                             </td>
+                            
+                            <td class="align-middle">
+                                {% if booking.booking_status == 'Confirmed' and booking.trek.status == 'Upcoming' %}
+                                    <form action="{{ url_for('trekker.cancel_booking', booking_id=booking.id) }}" method="POST">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-muted small">No actions available</span>
+                                {% endif %}
+                            </td>
+
                         </tr>
-                        
+
                         {% else %}
+
                         <tr>
                             <td colspan="6" class="text-center py-5 text-muted">
                                 <h5 class="mb-3">You haven't booked any treks yet.</h5>
                                 <a href="{{ url_for('trekker.explore_treks') }}" class="btn btn-primary">Explore Upcoming Treks</a>
                             </td>
                         </tr>
+
                         {% endfor %}
+
                     </tbody>
+
                 </table>
             </div>
         </div>
