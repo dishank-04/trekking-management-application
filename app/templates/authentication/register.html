@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %} Registration {% endblock %}
+
+{% block content %}
+
+    <h2>Create a Trekker Account</h2>
+
+    <form method="POST" action="{{ url_for('auth.register') }}">
+        <label>Full Name:</label>
+        <input type="text" name="name" required><br><br>
+        
+        <label>Username:</label>
+        <input type="text" name="username" required><br><br>
+
+        <label>Email ID:</label>
+        <input type="text" name="email" required><br><br>
+        
+        <label>Password:</label>
+        <input type="password" name="password" required><br><br>
+
+        <label>Confirm Password:</label>
+        <input type="password" name="confirm_password" required><br><br>
+        
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <p> Already have an account? <a href="{{ url_for('auth.login') }}">Log in here</a>.</p>
+
+{% endblock %}

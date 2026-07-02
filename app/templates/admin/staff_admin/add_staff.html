@@ -10,36 +10,36 @@
     <form action="{{ url_for('admin.add_staff') }}" method="POST">
         
         <div class="row mb-3">
-
             <div class="col-md-6">
-                <label class="form-label">Full Name</label>
+                <label class="form-label fw-bold">Full Name</label>
                 <input type="text" name="name" class="form-control" placeholder="Enter full name" required>
             </div>
-
             <div class="col-md-6">
-                <label class="form-label">Username</label>
+                <label class="form-label fw-bold">Username</label>
                 <input type="text" name="username" class="form-control" placeholder="Create a unique username" required>
             </div>
+        </div>
 
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter email address" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Create a secure password" required>
+            </div>
         </div>
 
         <div class="row mb-4">
-
             <div class="col-md-6">
-                <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Create a secure password" required>
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label">Contact Number</label>
+                <label class="form-label fw-bold">Contact Number</label>
                 <input type="tel" name="contact_number" class="form-control" minlength="10" maxlength="10" pattern="\d{10}" placeholder="10-digit mobile number" required>
             </div>
-
         </div>
 
         <button type="submit" class="btn btn-primary">Create Staff Profile</button>
         <a href="{{ url_for('admin.manage_staff') }}" class="btn btn-secondary">Cancel</a>
         
     </form>
-
 {% endblock %}

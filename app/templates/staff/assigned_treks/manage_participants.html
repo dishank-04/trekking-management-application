@@ -24,7 +24,7 @@
                         <tr>
                             <th>Booking ID</th>
                             <th>Trekker Name</th>
-                            <th>Contact (Username)</th>
+                            <th>Contact (Email ID)</th>
                             <th>Booking Date</th>
                             <th>Payment</th>
                             <th>Status</th>
@@ -35,10 +35,11 @@
                     <tbody>
 
                         {% for booking in bookings %}
+
                         <tr>
                             <td class="align-middle fw-bold">{{ booking.id }}</td>
                             <td class="align-middle">{{ booking.trekker.name }}</td>
-                            <td class="align-middle text-muted">{{ booking.trekker.username }}</td>
+                            <td class="align-middle text-muted">{{ booking.trekker.email_id }}</td>
                             <td class="align-middle">{{ booking.booking_date.strftime('%Y-%m-%d') }}</td>
                             
                             <td class="align-middle">

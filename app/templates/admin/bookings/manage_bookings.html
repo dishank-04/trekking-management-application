@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Global Bookings Ledger</h2>
+    <h2>Global Bookings</h2>
 </div>
 
 <div class="table-responsive">
@@ -17,6 +17,7 @@
                 <th>Booking ID</th>
                 <th>Date/Time</th>
                 <th>Trekker Name</th>
+                <th>Trekker Email</th>
                 <th>Trek Name</th>
                 <th>Trek Status</th>
                 <th>Booking Status</th>
@@ -34,6 +35,7 @@
                 <td>{{ booking.id }}</td>
                 <td>{{ booking.booking_date.strftime('%Y-%m-%d %H:%M') }}</td>
                 <td>{{ booking.trekker.username }}</td>
+                <td>{{ booking.trekker.email_id }}</td>
                 <td>{{ booking.trek.trek_name }}</td>
                 <td>{{ booking.trek.status }}</td>
 

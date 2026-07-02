@@ -13,6 +13,7 @@
             </div>
             
             <div class="card-body p-4">
+
                 <div class="alert alert-warning text-center small mb-4">
                     <strong>Security Protocol:</strong> You are using a temporary admin-assigned password. Setup a password for yourself.
                 </div>
@@ -30,6 +31,16 @@
                     </div>
 
                     <hr class="mb-4">
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-bold">Email Address</label>
+                        <input type="email" 
+                               class="form-control" 
+                               id="email" 
+                               name="email" 
+                               value="{{ user.email }}" 
+                               required>
+                    </div>
 
                     <div class="mb-3">
                         <label for="contact_number" class="form-label fw-bold">Contact Number</label>
@@ -56,6 +67,7 @@
 
                     <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Secure Profile & Enter Dashboard</button>
                 </form>
+
             </div>
         </div>
 

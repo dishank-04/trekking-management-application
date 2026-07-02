@@ -31,7 +31,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Available Slots</label>
-                <input type="number" name="available_slots" class="form-control" min="1" value="{{ trek.available_slots if trek else '' }}" required>
+                <input type="number" name="available_slots" class="form-control" min="0" value="{{ trek.available_slots if trek else '' }}" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label">Status</label>

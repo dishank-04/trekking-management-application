@@ -1,12 +1,12 @@
 from flask import Blueprint, request, render_template, session, redirect, url_for, flash
-from werkzeug.security import check_password_hash
-from app.models import User
+from werkzeug.security import check_password_hash, generate_password_hash
+from app.models import User, db
 
 authentication_bp = Blueprint('auth', __name__)
 
 @authentication_bp.route('/')
 def home():
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('auth.register'))
 
 
 @authentication_bp.route('/login', methods=['GET', 'POST'])
@@ -55,7 +55,52 @@ def login():
             
         
         elif user.role == 'Trekker':
-            return redirect(url_for('trekker_routes.dashboard'))
+
+            if user.is_blacklisted:
+                flash("Your Account is Blocked", "danger")
+                return redirect(url_for('auth.login'))
+
+            return redirect(url_for('trekker.trekker_dashboard'))
+
 
     flash('Invalid username or Password. Please enter valid credentials')
+    return redirect(url_for('auth.login'))
+
+
+
+@authentication_bp.route('/register', methods=['GET','POST'])
+def register():
+
+    if request.method == 'GET':
+        return render_template('/authentication/register.html')
+
+    name = request.form.get('name')
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    confirm_passowrd = request.form.get('confirm_password')
+
+    if password != confirm_passowrd:
+        flash("Passwords do not match try again", "danger")
+        return redirect(url_for('auth.login'))
+    
+    exisiting_user = User.query.filter_by(username=username).first()
+
+    if exisiting_user:
+        flash("Username already exist", "warning")
+        return redirect(url_for('auth.register'))
+    
+
+    hashed_password = generate_password_hash(password)
+
+    new_trekker = User(name=name,
+                       username=username,
+                       email_id=email,
+                       password_hash=hashed_password,
+                       role='Trekker')
+    
+    db.session.add(new_trekker)
+    db.session.commit()
+
+    flash("Account Created Successfully", "success")
     return redirect(url_for('auth.login'))

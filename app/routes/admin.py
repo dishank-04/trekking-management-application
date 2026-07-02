@@ -198,6 +198,7 @@ def add_staff():
         
         name = request.form.get('name')
         username = request.form.get('username')
+        email_id = request.form.get('email')
         raw_password = request.form.get('password')
         contact_number = request.form.get('contact_number')
 
@@ -218,6 +219,7 @@ def add_staff():
         # Now adding data to tables, We are adding data to 2 tables users and staff_profiles so need to create 2 object
 
         new_staff_user = models.User(username=username,
+                                     email_id=email_id,
                                      password_hash=hashed_password,
                                      name=name,
                                      role='Staff',

@@ -22,7 +22,7 @@ def create_app():
 
             hashed_pass = generate_password_hash('admin123')
 
-            admin_user_data = User(username='master_admin', password_hash=hashed_pass, name='System Admin', role='Admin')
+            admin_user_data = User(username='master_admin', email_id='admin@gmail.com', password_hash=hashed_pass, name='System Admin', role='Admin')
 
             db.session.add(admin_user_data)
             db.session.commit()
@@ -35,9 +35,11 @@ def create_app():
     from app.routes.authentication import authentication_bp # We import it here to prevent the Circular Import Trap.
     from app.routes.admin import admin_bp
     from app.routes.staff import staff_bp
+    from app.routes.trekker import trekker_bp
 
     app.register_blueprint(authentication_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(staff_bp)
+    app.register_blueprint(trekker_bp)
 
     return app

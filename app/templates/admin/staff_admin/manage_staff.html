@@ -25,6 +25,7 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Email</th> 
                 <th>Contact Number</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -38,6 +39,8 @@
             <tr>
                 <td>{{ staff.id }}</td>
                 <td>{{ staff.name }}</td>
+                
+                <td>{{ staff.email_id }}</td> 
 
                 <td>
                     {% if staff.staff_profile %}
@@ -61,28 +64,22 @@
 
                 <td>
                     <form action="{{ url_for('admin.toggle_staff_status', staff_id=staff.id) }}" method="POST" class="d-inline">
-
                         {% if staff.is_blacklisted %}
                             <button type="submit" class="btn btn-sm btn-success">Reactivate</button>
                         {% else %}
                             <button type="submit" class="btn btn-sm btn-danger">Deactivate</button>
                         {% endif %}
-
                     </form>
                 </td>
-
             </tr>
 
             {% else %}
-
             <tr>
-                <td colspan="5" class="text-center text-muted py-4">
-                    No staff members found in the system. Click "+ Add New Staff" to get started.
+                <td colspan="6" class="text-center text-muted py-4"> No staff members found in the system. Click "+ Add New Staff" to get started.
                 </td>
             </tr>
-
             {% endfor %}
-
         </tbody>
+    </table>
 
 {% endblock %}

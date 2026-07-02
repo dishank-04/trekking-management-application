@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %} Checkout - {{ trek.trek_name }} {% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            
+            <h2 class="mb-4">Secure Checkout</h2>
+            
+            <div class="card shadow-sm border-0 mb-4 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Order Summary</h5>
+                    <p class="mb-1"><strong>Trek:</strong> {{ trek.trek_name }}</p>
+                    <p class="mb-1"><strong>Dates:</strong> {{ trek.start_date.strftime('%b %d') }} - {{ trek.end_date.strftime('%b %d, %Y') }}</p>
+                    <hr>
+                    <h4 class="text-end fw-bold">Total: Rs 5000.00</h4> 
+                </div>
+            </div>
+
+            <form action="{{ url_for('trekker.process_payment', trek_id=trek.id) }}" method="POST">
+                
+                <h5 class="mb-3">Payment Information (Simulation)</h5>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Name on Card</label>
+                    <input type="text" class="form-control" required placeholder="John Doe">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Credit Card Number</label>
+                    <input type="text" class="form-control" required placeholder="XXXX-XXXX-XXXX-XXXX" pattern="\d{16}" title="16 digit card number">
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <label class="form-label fw-bold">Expiry Date</label>
+                        <input type="text" class="form-control" required placeholder="MM/YY">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label fw-bold">CVV</label>
+                        <input type="text" class="form-control" required placeholder="123" pattern="\d{3,4}">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm">Pay Now & Confirm Booking</button>
+            </form>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
