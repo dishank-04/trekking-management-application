@@ -11,7 +11,7 @@
             <h2 class="mb-0">Participants List</h2>
             <p class="text-muted mb-0">Trek: {{ trek.trek_name }} | Status: {{ trek.status }}</p>
         </div>
-        <a href="{{ url_for('staff.manage_treks', trek_id=trek.id) }}" class="btn btn-outline-secondary fw-bold">Back to Trek</a>
+        <a href="{{ url_for('staff.trek_history') }}" class="btn btn-outline-secondary fw-bold">Back to Trek</a>
     </div>
 
     <div class="card shadow border-0">
@@ -48,6 +48,8 @@
                                     <span class="badge bg-warning text-dark">Pending</span>
                                 {% elif booking.payment_status == 'Forfeited' %}
                                     <span class="badge bg-danger text-white">Forfeited</span>
+                                {% elif booking.payment_status == 'Refund' %}
+                                    <span class="badge bg-warning text-dark">Refund</span>
                                 {% endif %}
                             </td>
 

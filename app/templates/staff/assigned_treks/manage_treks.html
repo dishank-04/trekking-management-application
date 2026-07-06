@@ -79,6 +79,7 @@
                         <div class="mb-4">
                             <label for="status" class="form-label fw-bold">Trek Status</label>
                             <select class="form-select form-select-lg" id="status" name="status">
+                                <option value="Upcoming" {% if trek.status == 'Upcoming' %}selected{% endif %}>Upcoming</option>
                                 <option value="Active" {% if trek.status == 'Active' %}selected{% endif %}>Active</option>
                                 <option value="Completed" {% if trek.status  == 'Completed' %}selected{% endif %}>Completed</option>
                             </select>
