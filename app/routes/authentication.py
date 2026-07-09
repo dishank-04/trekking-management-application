@@ -41,7 +41,7 @@ def login():
 
                 session.clear()
 
-                flash("Your Account has been deactivated by Admin", "danger")
+                flash("Your Account has been deactivated. Please contact Admin", "danger")
                 return redirect(url_for('auth.login'))
             
             if user.staff_profile.status == "Pending_Active":
@@ -50,14 +50,13 @@ def login():
                 return redirect(url_for('staff.update_profile'))
             
             elif user.staff_profile.status == "Active":
-
                 return redirect(url_for('staff.staff_dashboard'))
             
         
         elif user.role == 'Trekker':
 
             if user.is_blacklisted:
-                flash("Your Account is Blocked", "danger")
+                flash("Your Account is Blocked. Contact Customer Support for more help", "danger")
                 return redirect(url_for('auth.login'))
 
             return redirect(url_for('trekker.trekker_dashboard'))
@@ -103,4 +102,14 @@ def register():
     db.session.commit()
 
     flash("Account Created Successfully", "success")
+    return redirect(url_for('auth.login'))
+
+
+
+@authentication_bp.route('/logout')
+def logout():
+
+    session.clear()
+
+    flash("You have been logged out successfully", "success")
     return redirect(url_for('auth.login'))

@@ -30,7 +30,15 @@ def admin_dashboard():
     pending_allotments = models.Trek.query.join(models.User).filter(models.User.is_blacklisted == True,
                                                                     models.Trek.status.in_(['Upcoming', 'Active'])).count()
 
-    return render_template('admin/dashboard/dashboard.html', treks_count=total_treks, users_count=total_users, staff_count=total_staff, bookings_count=total_bookings, pending_count=pending_allotments)
+    status_counts = models.db.session.query(models.Trek.status, 
+                                            models.db.func.count(models.Trek.id)).group_by(models.Trek.status).all()
+    
+    status_counts_dict = {} # The above query gives list of tuples, we need to convert that into python dictionary which we will later convert to JSON
+
+    for status, count in status_counts:
+        status_counts_dict[status] = count
+
+    return render_template('admin/dashboard/dashboard.html', treks_count=total_treks, users_count=total_users, staff_count=total_staff, bookings_count=total_bookings, pending_count=pending_allotments, status_counts_dict=status_counts_dict)
 
 
 ''' All routes given below are related to Trek. manage_treks, create_trek, edit_trek, delete_trek'''

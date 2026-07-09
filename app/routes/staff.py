@@ -74,7 +74,11 @@ def staff_dashboard():
     completed_treks_count = models.Trek.query.filter(models.Trek.assigned_staff_id == staff_id, 
                                                      models.Trek.status == 'Completed').count()
     
-    return render_template('/staff/dashboard/dashboard.html', staff_name=staff_user.name, active_count=active_treks_count, completed_count=completed_treks_count)
+    next_trek = models.Trek.query.filter(models.Trek.assigned_staff_id == staff_id,
+                                         models.Trek.status == 'Upcoming').order_by(models.Trek.start_date.asc()).first()
+
+    
+    return render_template('/staff/dashboard/dashboard.html', staff_name=staff_user.name, active_count=active_treks_count, completed_count=completed_treks_count, next_trek=next_trek)
 
 
 

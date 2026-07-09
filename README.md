@@ -74,3 +74,8 @@ MILESTONE-4 WORK
 1) We need to ensure that once staff login using admin assigned credentials he must first update his password. Until he do so he cannot access dashboard or anything related to staff. To do so we need to implement before_request route which will check every single time whether staff has updated profile or not.
 
 2) In manage_treks function its important that staff cannot activate 2 treks at a time so we need to check that before staff changes trek to active he should not be in some other trek that is active
+
+
+Using Chart.js 
+
+We need to show pictorial data to admin.

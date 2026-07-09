@@ -4,27 +4,52 @@
 
 {% block content %}
 
-    <h2>Create a Trekker Account</h2>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5"> 
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white text-center py-3">
+                <h4 class="mb-0">Create a Trekker Account</h4>
+            </div>
+            
+            <div class="card-body p-4 bg-light">
+                <form method="POST" action="{{ url_for('auth.register') }}">
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-bold">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. John Doe">
+                    </div>
 
-    <form method="POST" action="{{ url_for('auth.register') }}">
-        <label>Full Name:</label>
-        <input type="text" name="name" required><br><br>
-        
-        <label>Username:</label>
-        <input type="text" name="username" required><br><br>
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-bold">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required placeholder="Create a unique username">
+                    </div>
 
-        <label>Email ID:</label>
-        <input type="text" name="email" required><br><br>
-        
-        <label>Password:</label>
-        <input type="password" name="password" required><br><br>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-bold">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" required placeholder="name@example.com">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-bold">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" minlength="6" required placeholder="Create a secure password">
+                    </div>
 
-        <label>Confirm Password:</label>
-        <input type="password" name="confirm_password" required><br><br>
-        
-        <button type="submit">Sign Up</button>
-    </form>
-
-    <p> Already have an account? <a href="{{ url_for('auth.login') }}">Log in here</a>.</p>
+                    <div class="mb-4">
+                        <label for="confirm_password" class="form-label fw-bold">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" minlength="6" required placeholder="Repeat password">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100 fw-bold py-2 shadow-sm">Sign Up</button>
+                </form>
+                
+                <hr class="mt-4 mb-3">
+                
+                <div class="text-center">
+                    <small class="text-muted">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-decoration-none fw-bold">Log in here</a>.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

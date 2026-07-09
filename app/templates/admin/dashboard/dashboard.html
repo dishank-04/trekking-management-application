@@ -1,70 +1,137 @@
 {% extends "base.html" %}
 
-{% block title %} Overview {% endblock %}
+{% block title %} Admin Dashboard {% endblock %}
 
 {% block content %}
 
-    <h2 class="mb-4">Admin Dashboard</h2>
-    <div class="row">
+<div class="container mt-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">Admin Center</h2>
+            <p class="text-muted small">Overview</p>
+        </div>
+    </div>
+
+    {% if pending_count > 0 %}
+
+    <div class="alert alert-danger shadow-sm border-0 d-flex justify-content-between align-items-center mb-4" role="alert">
+        <div>
+            <h5 class="alert-heading fw-bold mb-1"><i class="bi bi-exclamation-triangle-fill me-2"></i>Action Required</h5>
+            <p class="mb-0 small">There are <strong>{{ pending_count }}</strong> treks currently assigned to deactivated staff. These require immediate reassignment.</p>
+        </div>
+        <a href="{{ url_for('admin.staff_pending') }}" class="btn btn-danger fw-bold shadow-sm">Allot Now</a>
+    </div>
+
+    {% endif %}
+
+    <h5 class="fw-bold text-secondary mb-3">Metrics</h5>
+    <div class="row mb-5">
 
         <div class="col-md-3 mb-3">
-            <a href="{{ url_for('admin.manage_treks') }}" class="text-decoration-none">
-                <div class="card text-white bg-primary h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Treks</h5>
-                        <h2 class="display-4">{{ treks_count }}</h2>
-                    </div>
+            <div class="card shadow-sm border-0 border-top border-primary border-4 h-100">
+                <div class="card-body">
+                    <p class="text-muted fw-bold text-uppercase small mb-1">Total Treks</p>
+                    <h2 class="display-5 fw-bold text-dark mb-0">{{ treks_count }}</h2>
+                    <a href="{{ url_for('admin.manage_treks') }}" class="stretched-link text-decoration-none"></a>
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="col-md-3 mb-3">
-            <a href="{{ url_for('admin.manage_trekkers') }}" class="text-decoration-none">
-                <div class="card text-white bg-success h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Trekkers</h5>
-                        <h2 class="display-4">{{ users_count }}</h2>
-                    </div>
+            <div class="card shadow-sm border-0 border-top border-success border-4 h-100">
+                <div class="card-body">
+                    <p class="text-muted fw-bold text-uppercase small mb-1">Total Trekkers</p>
+                    <h2 class="display-5 fw-bold text-dark mb-0">{{ users_count }}</h2>
+                    <a href="{{ url_for('admin.manage_trekkers') }}" class="stretched-link text-decoration-none"></a>
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="col-md-3 mb-3">
-            <a href="{{ url_for('admin.manage_staff') }}" class="text-decoration-none">
-                <div class="card text-white bg-warning h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Staff</h5>
-                        <h2 class="display-4">{{ staff_count }}</h2>
-                    </div>
+            <div class="card shadow-sm border-0 border-top border-warning border-4 h-100">
+                <div class="card-body">
+                    <p class="text-muted fw-bold text-uppercase small mb-1">Active Staff</p>
+                    <h2 class="display-5 fw-bold text-dark mb-0">{{ staff_count }}</h2>
+                    <a href="{{ url_for('admin.manage_staff') }}" class="stretched-link text-decoration-none"></a>
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="col-md-3 mb-3">
-           <a href="{{ url_for('admin.manage_bookings') }}" class="text-decoration-none"> 
-                <div class="card text-white bg-danger h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Bookings</h5>
-                        <h2 class="display-4">{{ bookings_count }}</h2>
-                    </div>
+           <div class="card shadow-sm border-0 border-top border-info border-4 h-100">
+                <div class="card-body">
+                    <p class="text-muted fw-bold text-uppercase small mb-1">Total Bookings</p>
+                    <h2 class="display-5 fw-bold text-dark mb-0">{{ bookings_count }}</h2>
+                    <a href="{{ url_for('admin.manage_bookings') }}" class="stretched-link text-decoration-none"></a>
                 </div>
-            </a>
+            </div>
         </div>
 
     </div>
 
     <div class="row">
-      <div class="col-md-3 mb-3">
-            <a href="{{ url_for('admin.staff_pending') }}" class="text-decoration-none">
-                <div class="card text-white bg-primary h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Pending Allotments</h5>
-                        <h2 class="display-4">{{ pending_count }}</h2>
-                    </div>
+        <div class="col-12">
+            <h5 class="fw-bold text-secondary mb-3">Quick Actions</h5>
+            <div class="card shadow-sm border-0 bg-white">
+                <div class="card-body p-4 d-flex gap-3">
+                    <a href="{{ url_for('admin.create_trek') }}" class="btn btn-outline-dark fw-bold px-4 py-2">
+                        + Deploy New Trek
+                    </a>
+                    <a href="{{ url_for('admin.add_staff') }}" class="btn btn-outline-dark fw-bold px-4 py-2">
+                        + Add New Staff
+                    </a>
                 </div>
-            </a>
+            </div>
         </div>
     </div>    
 
+    <div class="row mt-4">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="fw-bold text-secondary mb-3">Trek Distribution</h5>
+                <canvas id="trekStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    
+    const trekData = JSON.parse('{{ status_counts_dict | tojson }}');
+    
+    const labels = Object.keys(trekData);
+    const dataValues = Object.values(trekData);
+
+    const ctx = document.getElementById('trekStatusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Number of Treks',
+                data: dataValues,
+                backgroundColor: [
+                    '#0d6efd', 
+                    '#198754', 
+                    '#6c757d'  
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+</script>
+
+</div>
 
 {% endblock %}

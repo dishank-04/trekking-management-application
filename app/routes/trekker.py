@@ -113,6 +113,7 @@ def process_payment(trek_id):
     except Exception as e:
 
         flash("An Error occured. Please try again", "danger")
+        models.db.session.rollback()
         return redirect(url_for('trekker.trek_checkout', trek_id=trek.id))
     
 
@@ -173,13 +174,17 @@ def update_profile():
 
         new_name = request.form.get('name')
         new_email = request.form.get('email')
-        new_password = request.form.get('password')
+        old_password = request.form.get('old_password')
+        new_password = request.form.get('new_password')
 
         current_user.name = new_name
         current_user.email_id = new_email
 
-        if new_password:
-            current_user.password_hash = generate_password_hash(new_password)
+        if old_password != new_password:
+            flash("Passwords dont match please enter correct password", "danger")
+            return redirect(url_for('trekker.update_profile'))
+
+        current_user.password_hash = generate_password_hash(new_password)
         
         models.db.session.commit()
         flash("Profile has been updated successfully", "success")
