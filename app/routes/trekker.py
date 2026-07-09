@@ -23,7 +23,15 @@ def trekker_dashboard():
     current_user = models.User.query.get(session['user_id'])
     trekker_name = current_user.name
 
-    return render_template('/trekker/dashboard/dashboard.html', trekker_name=trekker_name)
+    next_booking = models.Booking.query.join(models.Trek).filter(models.Booking.user_id == session['user_id'],
+                                                                 models.Booking.booking_status == 'Confirmed',
+                                                                 models.Trek.status == 'Upcoming').order_by(models.Trek.start_date.asc()).first()
+    
+    completed_count = models.Booking.query.join(models.Trek).filter(models.Booking.user_id == session['user_id'],
+                                                                    models.Trek.status == 'Completed').count()
+
+
+    return render_template('/trekker/dashboard/dashboard.html', trekker_name=trekker_name, next_booking=next_booking, completed_count=completed_count)
 
 ''' All routes below are related to Explore Treks card '''
 

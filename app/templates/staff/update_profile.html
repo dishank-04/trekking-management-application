@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Update Profile {% endblock %}
+{% block title %} {% if is_onboarding %} Account Setup {% else %} Update Profile {% endif %} {% endblock %}
 
 {% block content %}
 
@@ -9,14 +9,20 @@
         
         <div class="card shadow border-0">
             <div class="card-header bg-dark text-white text-center py-3">
-                <h4 class="mb-0">Account Setup</h4>
+                <h4 class="mb-0">{% if is_onboarding %} Account Setup {% else %} Manage Profile {% endif %}</h4>
             </div>
             
             <div class="card-body p-4">
 
+                {% if is_joining %}
                 <div class="alert alert-warning text-center small mb-4">
-                    <strong>Security Protocol:</strong> You are using a temporary admin-assigned password. Setup a password for yourself.
+                    <strong>Security Protocol:</strong> You are using a temporary admin-assigned password. Setup a new password.
                 </div>
+                {% else %}
+                <div class="alert alert-info text-center small mb-4">
+                    Leave the password and Email field blank if you do not wish to change it.
+                </div>
+                {% endif %}
 
                 <form action="{{ url_for('staff.update_profile') }}" method="POST">
                     
@@ -34,44 +40,33 @@
 
                     <div class="mb-3">
                         <label for="email" class="form-label fw-bold">Email Address</label>
-                        <input type="email" 
-                               class="form-control" 
-                               id="email" 
-                               name="email" 
-                               value="{{ user.email }}" 
-                               required>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email_id }}">
                     </div>
 
                     <div class="mb-3">
                         <label for="contact_number" class="form-label fw-bold">Contact Number</label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="contact_number" 
-                               name="contact_number" 
-                               value="{{ user.staff_profile.contact_number }}" 
-                               required 
-                               pattern="\d{10}" 
-                               title="Contact number must be exactly 10 digits.">
+                        <input type="text" class="form-control" id="contact_number" name="contact_number" value="{{ user.staff_profile.contact_number }}" required pattern="\d{10}">
                     </div>
+
+                    {% if not is_joining %}
 
                     <div class="mb-4">
-                        <label for="password" class="form-label fw-bold">New Secure Password</label>
-                        <input type="password" 
-                               class="form-control" 
-                               id="password" 
-                               name="password" 
-                               required 
-                               minlength="6"
-                               placeholder="Enter at least 6 characters">
+                        <label for="password" class="form-label fw-bold">Old Password</label>
+                        <input type="password" class="form-control" id="password" name="old_password" placeholder="Enter your Old Password"> 
+
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Secure Profile & Enter Dashboard</button>
-                </form>
+                    {% endif %}
 
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-bold">{% if is_joining %}New Secure Password{% else %}New Password (Optional){% endif %}</label>
+                        <input type="password" class="form-control" id="password" name="new_password" minlength="6" {% if is_onboarding %}required{% endif %} placeholder="Enter at least 6 characters">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">{% if is_onboarding %}Secure Profile & Enter Dashboard{% else %}Save Changes{% endif %}</button>
+                </form>
             </div>
         </div>
-
     </div>
 </div>
-
 {% endblock %}

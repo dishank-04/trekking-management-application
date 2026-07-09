@@ -1,59 +1,107 @@
 {% extends "base.html" %}
 
-{% block title %} Trekker Dashboard {% endblock %}
+{% block title %} My Dashboard {% endblock %}
 
 {% block content %}
 
 <div class="container mt-4">
     
     <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="mb-1">Trekker Dashboard</h2>
-            <p class="text-muted">Welcome, {{ trekker_name }}</p>
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-0">My Dashboard</h2>
+                <p class="text-muted">Welcome back, {{ trekker_name }}</p>
+            </div>
+            <a href="{{ url_for('trekker.update_profile') }}" class="btn btn-sm btn-outline-secondary fw-bold">
+                <i class="bi bi-gear-fill me-1"></i> Settings
+            </a>
         </div>
     </div>
 
-    <div class="row">
-        
-        <div class="col-md-4 mb-3">
-            <a href="{{ url_for('trekker.explore_treks') }}" class="text-decoration-none">
-                <div class="card text-white bg-primary h-100 shadow border-0">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Explore Treks</h5>
-                        <h2 class="display-4 fw-semibold">Search</h2>
-                        <p class="card-text small text-white-50">View, search, and book open treks.</p>
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-4">
+            <h5 class="fw-bold text-secondary mb-3">Next Adventure</h5>
+            
+            {% if next_booking %}
+
+            <div class="card shadow-sm border-0 border-top border-success border-4 h-100 bg-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h3 class="fw-bold mb-1 text-dark">{{ next_booking.trek.trek_name }}</h3>
+                            <p class="text-muted mb-0"><i class="bi bi-geo-alt-fill me-1"></i>{{ next_booking.trek.location }}</p>
+                        </div>
+                        <span class="badge bg-success fs-6 px-3 py-2">Confirmed</span>
                     </div>
+                    
+                    <hr class="text-muted">
+
+                    <div class="row mb-4 mt-4">
+                        <div class="col-sm-4 mb-3 mb-sm-0">
+                            <small class="text-muted d-block fw-bold text-uppercase">Dates</small>
+                            <span class="fw-semibold">{{ next_booking.trek.start_date.strftime('%b %d') }} - {{ next_booking.trek.end_date.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <div class="col-sm-4 mb-3 mb-sm-0">
+                            <small class="text-muted d-block fw-bold text-uppercase">Difficulty</small>
+                            <span class="fw-semibold">{{ next_booking.trek.difficulty }}</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <small class="text-muted d-block fw-bold text-uppercase">Duration</small>
+                            <span class="fw-semibold">{{ next_booking.trek.duration }} Days</span>
+                        </div>
+                    </div>
+
+                    <a href="{{ url_for('trekker.trek_detail', trek_id=next_booking.trek.id) }}" class="btn btn-dark fw-bold px-4">View Trek Details</a>
                 </div>
-            </a>
+            </div>
+
+            {% else %}
+
+            <div class="card shadow-sm border-0 h-100 bg-light" style="min-height: 250px;">
+                <div class="card-body p-5 text-center d-flex flex-column justify-content-center align-items-center">
+                    <div class="bg-white rounded-circle p-3 mb-3 shadow-sm">
+                        <i class="bi bi-compass fs-2 text-primary"></i>
+                    </div>
+                    <h4 class="fw-bold mb-2">No Upcoming Treks</h4>
+                    <p class="text-muted mb-4">Your calendar is clear. You can plan your next Trek.</p>
+                    <a href="{{ url_for('trekker.explore_treks') }}" class="btn btn-primary fw-bold px-4 py-2 shadow-sm">Explore Upcoming Treks</a>
+                </div>
+            </div>
+
+            {% endif %}
+
         </div>
 
-        <div class="col-md-4 mb-3">
-            <a href="{{ url_for('trekker.booking_history') }}" class="text-decoration-none">
-                <div class="card text-white bg-success h-100 shadow border-0">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Booking History</h5>
-                        <h2 class="display-4 fw-semibold">Treks</h2>
-                        <p class="card-text small text-white-50">View past and current booked treks.</p>
+        <div class="col-lg-4 mb-4">
+            <h5 class="fw-bold text-secondary mb-3">Trekker Profile</h5>
+            
+            <div class="card shadow-sm border-0 mb-4 bg-white">
+                <div class="card-body d-flex justify-content-between align-items-center p-4">
+                    <div>
+                        <p class="text-muted fw-bold text-uppercase small mb-1">Completed Treks</p>
+                        <h2 class="display-5 fw-bold text-dark mb-0">{{ completed_count }}</h2>
+                    </div>
+                    <div class="text-success opacity-75">
+                        <i class="bi bi-trophy-fill fs-1"></i>
                     </div>
                 </div>
-            </a>
-        </div>
+            </div>
 
-        <div class="col-md-4 mb-3">
-            <a href="{{ url_for('trekker.update_profile') }}" class="text-decoration-none">
-                <div class="card text-dark bg-warning h-100 shadow border-0">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Update Profile</h5>
-                        <h2 class="display-4 fw-semibold">Manage</h2>
-                        <p class="card-text small text-dark-50">Edit your personal information.</p>
-                    </div>
+            <div class="card shadow-sm border-0 bg-white">
+                <div class="list-group list-group-flush rounded">
+                    <a href="{{ url_for('trekker.explore_treks') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+                        <span class="fw-semibold text-dark"><i class="bi bi-search me-2 text-muted"></i> Find New Treks</span>
+                        <i class="bi bi-chevron-right text-muted small"></i>
+                    </a>
+                    <a href="{{ url_for('trekker.booking_history') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+                        <span class="fw-semibold text-dark"><i class="bi bi-clock-history me-2 text-muted"></i> View History</span>
+                        <i class="bi bi-chevron-right text-muted small"></i>
+                    </a>
                 </div>
-            </a>
+            </div>
         </div>
-
     </div>
 
 </div>
-
 
 {% endblock %}

@@ -30,35 +30,63 @@ def staff_hold():
 def update_profile():
 
     current_staff_user = models.User.query.get(session['user_id'])
+    is_joining = current_staff_user.staff_profile.status == 'Pending_Active'
 
     if request.method == 'POST':
 
-        new_password = request.form.get('password')
-        contact_number = request.form.get('contact_number')
 
-        if not new_password or len(new_password) < 6: # need to keep 'not new password' so that if staff_user tris to submit empty passowrd it evaluates to True. 
-            flash("Password must be atleast 6 characters", "warning")
-            return redirect(url_for('staff.update_profile'))
+        email = request.form.get('email')
+        old_passowrd = request.form.get('old_password')
+        new_password = request.form.get('new_password')
+        contact_number = request.form.get('contact_number')
 
         if len(contact_number) != 10 or not contact_number.isdigit():
 
             flash("Invalid Format of contact number", "danger")
             return redirect(url_for('staff.update_profile'))
-    
         
-        current_staff_user.password_hash = generate_password_hash(new_password)
+
+        if is_joining:
+
+            if not new_password or len(new_password) < 6:
+                flash("Password must be atleast 6 characters long","danger")
+                return redirect(url_for('staff.update_profile'))
+            
+            current_staff_user.password_hash = generate_password_hash(new_password)
+            current_staff_user.staff_profile.status = 'Active'
+
+            flash(f"Welcome to Dashboard {current_staff_user.name}","success")
+
+        else:
+
+            if new_password: # Password update is optional
+
+                if old_passowrd != current_staff_user.password_hash:
+                    flash("Wrong Password try again", "danger")
+                    return redirect(url_for('staff.update_profile'))
+
+                if new_password != old_passowrd:
+                    flash("Passwords dont match", "danger")
+                    return redirect(url_for('staff.update_profile'))
+
+                if len(new_password) < 6:
+                    flash("New password must be atleast 6 characters", "danger")
+                    return redirect(url_for('staff.update_profile'))
+                
+                current_staff_user.password_hash = generate_password_hash(new_password)
+            
+        flash("Profile Updated Successfully", "success")
+        
+        
         current_staff_user.staff_profile.contact_number = contact_number
-
-
-        current_staff_user.staff_profile.status = "Active"
+        current_staff_user.email_id = email
 
         models.db.session.commit()
 
-        flash("Welcome to Staff Dashboard", "success")
         return redirect(url_for('staff.staff_dashboard'))
-    
+
     # For GET Request
-    return render_template('staff/update_profile.html', user=current_staff_user)
+    return render_template('staff/update_profile.html', user=current_staff_user, is_joining=is_joining)
 
 
 
@@ -78,7 +106,7 @@ def staff_dashboard():
                                          models.Trek.status == 'Upcoming').order_by(models.Trek.start_date.asc()).first()
 
     
-    return render_template('/staff/dashboard/dashboard.html', staff_name=staff_user.name, active_count=active_treks_count, completed_count=completed_treks_count, next_trek=next_trek)
+    return render_template('/staff/dashboard/dashboard.html', staff_user=staff_user, active_count=active_treks_count, completed_count=completed_treks_count, next_trek=next_trek)
 
 
 
