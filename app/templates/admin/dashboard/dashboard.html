@@ -95,14 +95,23 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-6 mb-4">
+    <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+            <h5 class="fw-bold text-secondary mb-3">Overview</h5>
+            <canvas id="adminOverviewChart"></canvas>
+        </div>
+    </div>
+
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    
+
     const trekData = JSON.parse('{{ status_counts_dict | tojson }}');
-    
     const labels = Object.keys(trekData);
     const dataValues = Object.values(trekData);
 
@@ -112,26 +121,33 @@
         data: {
             labels: labels,
             datasets: [{
-                label: 'Number of Treks',
                 data: dataValues,
-                backgroundColor: [
-                    '#0d6efd', 
-                    '#198754', 
-                    '#6c757d'  
-                ],
+                backgroundColor: ['#0d6efd', '#198754', '#6c757d'],
                 borderWidth: 0
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    const overviewCtx = document.getElementById('adminOverviewChart').getContext('2d');
+    new Chart(overviewCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Treks', 'Total Bookings', 'Active Users'],
+            datasets: [{
+                label: 'System Metrics',
+                data: [{{ treks_count }}, {{ bookings_count }}, {{ users_count }}],
+                backgroundColor: ['#0d6efd', '#0dcaf0', '#198754'],
+                borderRadius: 4
             }]
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: { position: 'bottom' }
-            }
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+            plugins: { legend: { display: false } }
         }
     });
 
 </script>
-
-</div>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, session, redirect, url_for, flash
 from app import models
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash,check_password_hash
 
 
 staff_bp = Blueprint('staff', __name__, url_prefix='/staff')
@@ -58,25 +58,25 @@ def update_profile():
             flash(f"Welcome to Dashboard {current_staff_user.name}","success")
 
         else:
-
-            if new_password: # Password update is optional
-
-                if old_passowrd != current_staff_user.password_hash:
-                    flash("Wrong Password try again", "danger")
+                
+            if new_password: # Password update is optional we dont need password to get updated if user doesnt want
+                
+                if not check_password_hash(current_staff_user.password_hash, old_passowrd):
+                    flash("Wrong Old Password. Please try again.", "danger")
                     return redirect(url_for('staff.update_profile'))
-
-                if new_password != old_passowrd:
-                    flash("Passwords dont match", "danger")
+                
+                if new_password == old_passowrd:
+                    flash("New password cannot be the same as the old password.", "warning")
                     return redirect(url_for('staff.update_profile'))
 
                 if len(new_password) < 6:
-                    flash("New password must be atleast 6 characters", "danger")
+                    flash("New password must be at least 6 characters.", "danger")
                     return redirect(url_for('staff.update_profile'))
-                
+
                 current_staff_user.password_hash = generate_password_hash(new_password)
             
-        flash("Profile Updated Successfully", "success")
         
+        flash("Profile Updated Successfully", "success")
         
         current_staff_user.staff_profile.contact_number = contact_number
         current_staff_user.email_id = email
@@ -105,8 +105,19 @@ def staff_dashboard():
     next_trek = models.Trek.query.filter(models.Trek.assigned_staff_id == staff_id,
                                          models.Trek.status == 'Upcoming').order_by(models.Trek.start_date.asc()).first()
 
+    all_assigned_treks = models.Trek.query.filter_by(assigned_staff_id=staff_id).all()
+
+    trek_names = [trek.trek_name for trek in all_assigned_treks]
+    participant_counts = [len([b for b in trek.bookings if b.booking_status != 'Cancelled']) for trek in all_assigned_treks]
+
     
-    return render_template('/staff/dashboard/dashboard.html', staff_user=staff_user, active_count=active_treks_count, completed_count=completed_treks_count, next_trek=next_trek)
+    return render_template('/staff/dashboard/dashboard.html', 
+                           staff_user=staff_user, 
+                           active_count=active_treks_count, 
+                           completed_count=completed_treks_count, 
+                           next_trek=next_trek,
+                           trek_names=trek_names,
+                           participant_counts=participant_counts)
 
 
 

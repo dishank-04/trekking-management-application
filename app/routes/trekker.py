@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, session, redirect, url_for, flash
 from app import models
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 trekker_bp = Blueprint('trekker', __name__, url_prefix='/trekker')
 
@@ -30,8 +30,17 @@ def trekker_dashboard():
     completed_count = models.Booking.query.join(models.Trek).filter(models.Booking.user_id == session['user_id'],
                                                                     models.Trek.status == 'Completed').count()
 
+    user_bookings = models.Booking.query.filter_by(user_id = session['user_id']).all()
+    trek_status = {'Confirmed':0, 'Completed':0, 'Cancelled':0}
 
-    return render_template('/trekker/dashboard/dashboard.html', trekker_name=trekker_name, next_booking=next_booking, completed_count=completed_count)
+    for booking in user_bookings:
+        trek_status[booking.booking_status] += 1
+    
+    return render_template('/trekker/dashboard/dashboard.html', 
+                           trekker_name=trekker_name, 
+                           next_booking=next_booking, 
+                           completed_count=completed_count,
+                           trek_status=trek_status)
 
 ''' All routes below are related to Explore Treks card '''
 
@@ -186,13 +195,26 @@ def update_profile():
         new_password = request.form.get('new_password')
 
         current_user.name = new_name
-        current_user.email_id = new_email
 
-        if old_password != new_password:
-            flash("Passwords dont match please enter correct password", "danger")
-            return redirect(url_for('trekker.update_profile'))
+        if new_password:
 
-        current_user.password_hash = generate_password_hash(new_password)
+            if not check_password_hash(current_user.password_hash, old_password):
+                flash("Wrong Old Password try again.", "danger")
+                return redirect(url_for('trekker.update_profile'))
+
+            if new_password == old_password:
+                flash("New password cannot be the same as the old password.", "warning")
+                return redirect(url_for('trekker.update_profile'))
+            
+            if len(new_password) < 6:
+                flash("New password must be at least 6 characters.", "danger")
+                return redirect(url_for('trekker.update_profile'))
+
+            current_user.password_hash = generate_password_hash(new_password)
+
+        
+        if new_email:
+            current_user.email_id = new_email
         
         models.db.session.commit()
         flash("Profile has been updated successfully", "success")
