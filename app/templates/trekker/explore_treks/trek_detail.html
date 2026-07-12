@@ -11,15 +11,7 @@
             <div class="col-md-8">
             
             <h1 class="display-4 fw-bold mb-3">{{ trek.trek_name }}</h1>
-            
-            <!--
-            <div class="mb-4 rounded shadow-sm overflow-hidden" style="height: 400px; background-color: #f8f9fa;">
-                <img src="{{ url_for('static', filename='images/trek/trek_%s.jpg' | format(trek.id)) }}" 
-                     alt="{{ trek.trek_name }}" 
-                     class="w-100 h-100" 
-                     style="object-fit: cover;">
-            </div>
-            -->
+
             <h3>About This Trek</h3>
             <p>Experience the adventure in {{ trek.location }}. This {{ trek.duration }}-day journey is rated as <strong>{{ trek.difficulty }}</strong>.</p>
             

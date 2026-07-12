@@ -59,7 +59,7 @@ def update_profile():
 
         else:
                 
-            if new_password: # Password update is optional we dont need password to get updated if user doesnt want
+            if new_password: # Password update is optional we dont need password to get updated if user doesnt want to
                 
                 if not check_password_hash(current_staff_user.password_hash, old_passowrd):
                     flash("Wrong Old Password. Please try again.", "danger")
@@ -86,7 +86,7 @@ def update_profile():
         return redirect(url_for('staff.staff_dashboard'))
 
     # For GET Request
-    return render_template('staff/update_profile.html', user=current_staff_user, is_joining=is_joining)
+    return render_template('staff/update_profile/update_profile.html', user=current_staff_user, is_joining=is_joining)
 
 
 
