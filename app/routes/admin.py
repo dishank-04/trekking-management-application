@@ -249,7 +249,7 @@ def add_staff():
 @admin_bp.route('/staff/toggle/<int:staff_id>', methods=['POST'])
 def toggle_staff_status(staff_id):
 
-    # We are not going to delete Staff from db rather we will just deactivate that staff member, because we need staff's id to actualyl get history and booking part. 
+    # We are not going to delete Staff from db rather we will just deactivate that staff member, because we need staff's id to actually get history and booking part. 
 
     staff_user = models.User.query.get_or_404(staff_id)
 
@@ -306,6 +306,55 @@ def reassign_staff(trek_id):
 
     flash(f"Successfully Reassigned {trek_to_update.trek_name} to {valid_staff.name}", "success")
     return redirect(url_for('admin.staff_pending'))
+
+
+
+
+@admin_bp.route('/staff/applications')
+def staff_applications():
+
+    pending_staff_approvals = models.User.query.filter_by(role="Pending_Approval").all()
+    return render_template('admin/staff_admin/staff_applications.html', pending_staff_approvals=pending_staff_approvals)
+
+
+
+@admin_bp.route('/staff/approve/<int:user_id>', methods=['POST'])
+def approve_staff(user_id):
+
+    user = models.User.query.get_or_404(user_id)
+
+    if user.role != "Pending_Approval":
+        flash("Invalid Operation. Not a pending applicant", "danger")
+        return redirect(url_for('admin.staff_applications'))
+    
+    user.role = "Staff"
+    temp_contact_number = f"TEMP-{user.id}"
+    
+    new_profile = models.StaffProfile(user_id=user.id, contact_number=temp_contact_number, status="Pending_Active")
+
+    models.db.session.add(new_profile)
+    models.db.session.commit()
+
+    flash(f"{user.name}'s Application approved they are now Pending_Active", "success")
+    return redirect(url_for('admin.staff_applications'))
+
+
+
+@admin_bp.route('/staff/reject/<int:user_id>', methods=['POST'])
+def reject_staff(user_id):
+
+    user = models.User.query.get_or_404(user_id)
+
+    if user.role != "Pending_Approval":
+        flash("Invalid cannot proceed ahead", "danger")
+        return redirect(url_for('admin.staff_applications'))
+    
+    models.db.session.delete(user)
+    models.db.session.commit()
+
+    flash(f"{user.name}'s Application is Rejected", "warning")
+    return redirect(url_for('admin.staff_applications'))
+
 
 
 

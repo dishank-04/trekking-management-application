@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %} Pending Staff Applications {% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">Pending Staff Applications</h2>
+            <p class="text-muted small mb-0">Review applicants for staff</p>
+        </div>
+        <a href="{{ url_for('admin.manage_staff') }}" class="btn btn-outline-secondary fw-bold">Back to Staff List</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email Address</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for app in pending_staff_approvals %}
+
+                        <tr>
+                            <td class="align-middle fw-bold">{{ app.id }}</td>
+                            <td class="align-middle">{{ app.name }}</td>
+                            <td class="align-middle">{{ app.username }}</td>
+                            <td class="align-middle">{{ app.email_id }}</td>
+                            <td class="align-middle">
+                                <span class="badge bg-warning text-dark px-2 py-1">Pending Review</span>
+                            </td>
+                            <td class="align-middle">
+                                <form action="{{ url_for('admin.approve_staff', user_id=app.id) }}" method="POST" class="d-inline me-1">
+                                    <button type="submit" class="btn btn-sm btn-success fw-bold shadow-sm">Approve</button>
+                                </form>
+                                <form action="{{ url_for('admin.reject_staff', user_id=app.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to reject and permanently delete this applicant?');">
+                                    <button type="submit" class="btn btn-sm btn-danger fw-bold shadow-sm">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+                                <strong>No pending staff applications.</strong>
+                                <p class="small mb-0">When users apply from the registration page, they will appear here.</p>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

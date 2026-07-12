@@ -74,17 +74,23 @@
         <div class="col-12">
             <h5 class="fw-bold text-secondary mb-3">Quick Actions</h5>
             <div class="card shadow-sm border-0 bg-white">
-                <div class="card-body p-4 d-flex gap-3">
+                <div class="card-body p-4 d-flex flex-wrap gap-3">
+
                     <a href="{{ url_for('admin.create_trek') }}" class="btn btn-outline-dark fw-bold px-4 py-2">
                         + Deploy New Trek
                     </a>
                     <a href="{{ url_for('admin.add_staff') }}" class="btn btn-outline-dark fw-bold px-4 py-2">
                         + Add New Staff
                     </a>
+
+                    <a href="{{ url_for('admin.staff_applications') }}" class="btn btn-warning fw-bold px-4 py-2 shadow-sm">
+                        <i class="bi bi-inbox-fill me-1"></i> Review Staff Applications
+                    </a>
+
                 </div>
             </div>
         </div>
-    </div>    
+    </div>   
 
     <div class="row mt-4">
     <div class="col-md-6 mb-4">

@@ -41,6 +41,7 @@ def home():
     return redirect(url_for('auth.register'))
 
 
+
 @authentication_bp.route('/login', methods=['GET', 'POST'])
 def login():
 
@@ -56,6 +57,11 @@ def login():
     user = User.query.filter_by(username=username).first()
 
     if user and check_password_hash(user.password_hash, password):
+
+        if user.role == "Pending_Approval":
+            flash("Your application is under review by admin", "warning")
+            return redirect(url_for('auth.login'))
+
         session['user_id'] = user.id
         session['role'] = user.role
 
@@ -63,6 +69,7 @@ def login():
 
     flash('Invalid username or Password. Please enter valid credentials', 'danger')
     return redirect(url_for('auth.login'))
+
 
 
 @authentication_bp.route('/register', methods=['GET','POST'])
@@ -79,6 +86,7 @@ def register():
     email = request.form.get('email')
     password = request.form.get('password')
     confirm_passowrd = request.form.get('confirm_password')
+    registration_role = request.form.get('registration_role')
 
     if password != confirm_passowrd:
         flash("Passwords do not match try again", "danger")
@@ -92,17 +100,26 @@ def register():
 
     hashed_password = generate_password_hash(password)
 
-    new_trekker = User(name=name,
+    db_role = "Pending_Approval" if registration_role=="Trek Staff" else "Trekker"
+
+    new_user = User(name=name,
                        username=username,
                        email_id=email,
                        password_hash=hashed_password,
-                       role='Trekker')
+                       role=db_role)
     
-    db.session.add(new_trekker)
+    db.session.add(new_user)
     db.session.commit()
 
-    flash("Account Created Successfully", "success")
+
+    if db_role == "Pending_Approval":
+        flash("Application Submitted Successfully. Please wait for Admin Approval.","success")
+    else:
+        flash("Account Created Successfully", "success")
+    
     return redirect(url_for('auth.login'))
+
+
 
 
 @authentication_bp.route('/logout')

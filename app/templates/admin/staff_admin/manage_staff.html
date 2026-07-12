@@ -16,7 +16,12 @@
             {% endif %}
         </form>
 
-        <a href="{{ url_for('admin.add_staff') }}" class="btn btn-primary">+ Add New Staff</a>
+        <div>
+            <a href="{{ url_for('admin.staff_applications') }}" class="btn btn-warning fw-bold me-2 shadow-sm">
+                <i class="bi bi-person-lines-fill me-1"></i> Review Applications
+            </a>
+            <a href="{{ url_for('admin.add_staff') }}" class="btn btn-primary shadow-sm">+ Add New Staff</a>
+        </div>
 
     </div>
 
@@ -54,7 +59,7 @@
                     {% if staff.is_blacklisted %}
                         <span class="badge bg-danger">Blacklisted</span>
                     {% elif staff.staff_profile and staff.staff_profile.status == 'Pending_Active' %}
-                        <span class="badge bg-warning text-dark">Pending Setup</span>
+                        <span class="badge bg-warning text-dark">Pending Active</span>
                     {% elif staff.staff_profile and staff.staff_profile.status == 'Active' %}
                         <span class="badge bg-success">Active</span>
                     {% else %}

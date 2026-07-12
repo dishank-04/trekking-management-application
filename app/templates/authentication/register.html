@@ -8,15 +8,42 @@
     <div class="col-md-6 col-lg-5"> 
         <div class="card shadow-sm border-0">
             <div class="card-header bg-dark text-white text-center py-3">
-                <h4 class="mb-0">Create a Trekker Account</h4>
+                <h4 class="mb-0">Create an Account</h4>
             </div>
             
             <div class="card-body p-4 bg-light">
+
                 <form method="POST" action="{{ url_for('auth.register') }}">
+
+                    <div class="mb-4 p-3 border rounded bg-white shadow-sm">
+                        <label class="form-label fw-bold mb-2">Register As:</label>
+                        <div class="d-flex gap-4">
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="registration_role" id="role_trekker" value="Trekker" checked onchange="toggleStaffWarning()">
+                                <label class="form-check-label" for="role_trekker">
+                                    Trekker
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="registration_role" id="role_staff" value="Trek Staff" onchange="toggleStaffWarning()">
+                                <label class="form-check-label" for="role_staff">
+                                    Trek Staff
+                                </label>
+                            </div>
+
+                        </div>
+                        
+                        <div id="staff_warning" class="text-danger small mt-2 fw-bold" style="display: none;">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Staff accounts require Admin approval before login access is granted.
+                        </div>
+                        
+                    </div>
                     
                     <div class="mb-3">
                         <label for="name" class="form-label fw-bold">Full Name</label>
-                        <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. John Doe">
+                        <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. Harry Potter">
                     </div>
 
                     <div class="mb-3">
@@ -34,22 +61,34 @@
                         <input type="password" class="form-control" id="password" name="password" minlength="6" required placeholder="Create a secure password">
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label for="confirm_password" class="form-label fw-bold">Confirm Password</label>
                         <input type="password" class="form-control" id="confirm_password" name="confirm_password" minlength="6" required placeholder="Repeat password">
                     </div>
-                    
+                
                     <button type="submit" class="btn btn-success w-100 fw-bold py-2 shadow-sm">Sign Up</button>
                 </form>
                 
                 <hr class="mt-4 mb-3">
-                
                 <div class="text-center">
                     <small class="text-muted">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-decoration-none fw-bold">Log in here</a>.</small>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function toggleStaffWarning() {
+        const staffRadio = document.getElementById('role_staff');
+        const warningBox = document.getElementById('staff_warning');
+        if (staffRadio.checked) {
+            warningBox.style.display = 'block';
+        } else {
+            warningBox.style.display = 'none';
+        }
+    }
+</script>
 
 {% endblock %}
