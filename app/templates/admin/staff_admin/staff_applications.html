@@ -37,7 +37,7 @@
                             <td class="align-middle">{{ app.username }}</td>
                             <td class="align-middle">{{ app.email_id }}</td>
                             <td class="align-middle">
-                                <span class="badge bg-warning text-dark px-2 py-1">Pending Review</span>
+                                <span class="badge bg-warning text-dark px-2 py-1">Pending Approval</span>
                             </td>
                             <td class="align-middle">
                                 <form action="{{ url_for('admin.approve_staff', user_id=app.id) }}" method="POST" class="d-inline me-1">
